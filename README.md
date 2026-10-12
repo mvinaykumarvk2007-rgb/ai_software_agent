@@ -162,7 +162,10 @@ Blueprint; then add `GEMINI_API_KEY` in the API service's **Environment** settin
 before using AI generation. The sample Blueprint uses the default Render hostnames
 `ai-software-engineer-web.onrender.com` and `ai-software-engineer-api.onrender.com`;
 if you change either service name, update `VITE_API_BASE_URL` on the Static Site
-and `CORS_ORIGINS` on the API service to match the assigned HTTPS URLs.
+and `CORS_ORIGINS` on the API service to match the assigned HTTPS URLs. The
+GitHub Pages workflow defaults to `https://ai-software-engineer-api.onrender.com`;
+set the GitHub Actions repository variable `VITE_API_BASE_URL` if Render assigns a
+different backend hostname.
 
 The sample uses Render's free web-service plan and local generated-project storage.
 That storage is temporary: generated projects can be lost when the service restarts

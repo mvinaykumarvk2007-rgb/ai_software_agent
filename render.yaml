@@ -15,7 +15,7 @@ services:
       - key: GEMINI_MODEL
         value: gemini-3.8-flash
       - key: CORS_ORIGINS
-        value: https://ai-software-engineer-web.onrender.com
+        value: https://mvinaykumarvk2007-rgb.github.io,https://ai-software-engineer-web.onrender.com
 
   - type: web
     name: ai-software-engineer-web
