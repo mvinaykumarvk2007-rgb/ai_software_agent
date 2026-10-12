@@ -1,4 +1,5 @@
 import os
+import time
 from typing import Type, TypeVar
 from pathlib import Path
 from pydantic import BaseModel
@@ -79,11 +80,18 @@ def generate_structured(prompt: str, schema_cls: Type[T], system_instruction: st
             temperature=0.2,
         )
 
-        response = client.models.generate_content(
-            model=model,
-            contents=prompt,
-            config=config,
-        )
+        for attempt in range(2):
+            try:
+                response = client.models.generate_content(
+                    model=model,
+                    contents=prompt,
+                    config=config,
+                )
+                break
+            except errors.APIError as e:
+                if getattr(e, "code", None) != 503 or attempt == 1:
+                    raise
+                time.sleep(1)
 
         if not response or not response.text:
             raise GeminiAPIError("Model returned an empty response.", status_code=502)
@@ -109,6 +117,11 @@ def generate_structured(prompt: str, schema_cls: Type[T], system_instruction: st
                 f"Gemini model '{model}' is unavailable to this API key. "
                 "Update GEMINI_MODEL in backend/.env to a model listed by Google AI Studio.",
                 status_code=404
+            )
+        elif status_code == 503:
+            raise GeminiAPIError(
+                "Gemini is temporarily overloaded. Please wait a moment and try again.",
+                status_code=503
             )
         else:
             raise GeminiAPIError(f"Gemini API error: {str(e)}", status_code=502)
