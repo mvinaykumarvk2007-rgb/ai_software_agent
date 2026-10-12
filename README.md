@@ -176,6 +176,23 @@ step will report that Docker is unavailable when the builder itself is hosted.
 To share a generated website publicly, deploy that generated app separately to a
 web host; a local preview URL is not accessible from other computers.
 
+## 🌐 GitHub Pages Frontend
+
+The `.github/workflows/static.yml` workflow builds `frontend/` and publishes its
+Vite output to GitHub Pages, including the repository subpath
+`/ai_software_agent/`. Replace the repository's existing root-upload Pages
+workflow with this file and push the complete project (especially `frontend/`,
+`backend/`, and `.github/workflows/static.yml`) to its `main` branch.
+
+GitHub Pages hosts only static files, not the FastAPI backend. To enable health
+checks and AI generation, deploy the backend separately (for example, to Render),
+then add a GitHub Actions repository variable named `VITE_API_BASE_URL` containing
+the backend's HTTPS origin (for example, `https://your-api.onrender.com`). Configure
+the backend's `CORS_ORIGINS` environment variable with
+`https://mvinaykumarvk2007-rgb.github.io`. Without a deployed backend the page can
+load, but builder API features will remain offline. Never expose `GEMINI_API_KEY`
+as a `VITE_` variable or in the static frontend.
+
 ---
 
 ## 🧪 API Endpoints

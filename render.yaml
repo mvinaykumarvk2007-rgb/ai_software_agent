@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: ai-software-engineer-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
+      - key: CORS_ORIGINS
+        value: https://ai-software-engineer-web.onrender.com
+
+  - type: web
+    name: ai-software-engineer-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://ai-software-engineer-api.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
